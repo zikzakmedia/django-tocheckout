@@ -1,0 +1,78 @@
+================
+django-2checkout
+================
+
+Django 2Checkout is APP by Django. Same as anothers payments gateway, for example django-paypal, django-sermepa....
+
+1. Install: 
+
+    python setup.py install
+
+2. Add INSTALLED_APPS
+
+    INSTALLED_APPS = (
+        ...
+        'tocheckout.tocheckout',
+    )
+
+3. Reload model:
+
+    Not necessary in this version.
+
+4. Add in settings or your configuration django file
+
+    TOCHECKOUT_SID = "" # seller identification number
+    TOCHECKOUT_SECRET_WORD = "" # secret word
+
+    See settings_var.py more definitions available
+
+5. In views.py, add this code:
+
+    from tocheckout.tocheckout.forms import tocheckoutPaymentForm
+    from tocheckout.tocheckout.models import tocheckoutResponse
+
+    tocheckout_dict = {
+        "sid": TOCHECKOUT_SID, # seller identification number
+        "total": '',
+        "cart_order_id":'',
+        "first_name": '',
+        "last_name": '',
+        "phone": '',
+        "street_address": '',
+        "city": '',
+        "zip": '',
+        "country": '',
+        "state": ,
+        "email": '',
+        "lang": '',
+    }
+
+    form = tocheckoutPaymentForm(initial=tocheckout_dict)
+
+    return render_to_response("tocheckout/form.html", {'form':form, 'debug':DEBUG}, context_instance=RequestContext(request))
+
+    Note:
+    Spanish language is es_ib, not es.
+
+6. Add in urls:
+
+    url(r'^tocheckout/confirm', 'payment.tocheckout.views.tocheckout_confirm', name='payment_tocheckout_confirm'),
+    url(r'^tocheckout/', 'payment.tocheckout.views.index', name='payment_tocheckout'),
+
+7. IPN signal:
+ 
+   2Checkout documentation not detail how to IPN signal process. Afeter you return from 2checkout, you need check if payment is true or wrong.
+
+    m = hashlib.md5()
+    m.update(TOCHECKOUT_SECRET_WORD)
+    m.update(TOCHECKOUT_SID)
+    m.update(order)
+    m.update(total)
+
+    key1 = m.hexdigest().upper()
+    Key2 = request.POST['key'][0]
+
+    if key1 == key2:
+        payment = True
+
+8. Relax, take a coffe and waitting to make to rich.
