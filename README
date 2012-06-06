@@ -70,7 +70,7 @@ Django 2Checkout is APP by Django. Same as anothers payments gateway, for exampl
     m.update(total)
 
     key1 = m.hexdigest().upper()
-    Key2 = request.POST['key'][0]
+    Key2 = request.POST['key']
 
     if key1 == key2:
         payment = True
